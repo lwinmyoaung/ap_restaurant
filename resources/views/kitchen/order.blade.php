@@ -1,87 +1,106 @@
 @extends('layouts.master')
 
 @section('content')
-  <!-- Content Wrapper. Contains page content -->
+ <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
-    <div class="content-header">
+    <section class="content-header">
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0 text-dark">Kitchen Panel</h1>
-          </div><!-- /.col -->
-          <div class="col-sm-6">
-
-          </div><!-- /.col -->
-        </div><!-- /.row -->
+            <h1>Kitchen Panel</h1>
+          </div>
+        </div>
       </div><!-- /.container-fluid -->
-    </div>
-    <!-- /.content-header -->
+    </section>
 
     <!-- Main content -->
-    <div class="content">
+    <section class="content">
       <div class="container-fluid">
         <div class="row">
-          <div class="col-lg-6">
-            <div class="card">
-              <div class="card-body">
-                <h5 class="card-title">Card title</h5>
-
-                <p class="card-text">
-                  Some quick example text to build on the card title and make up the bulk of the card's
-                  content.
-                </p>
-
-                <a href="#" class="card-link">Card link</a>
-                <a href="#" class="card-link">Another link</a>
-              </div>
-            </div>
-
-            <div class="card card-primary card-outline">
-              <div class="card-body">
-                <h5 class="card-title">Card title</h5>
-
-                <p class="card-text">
-                  Some quick example text to build on the card title and make up the bulk of the card's
-                  content.
-                </p>
-                <a href="#" class="card-link">Card link</a>
-                <a href="#" class="card-link">Another link</a>
-              </div>
-            </div><!-- /.card -->
-          </div>
-          <!-- /.col-md-6 -->
-          <div class="col-lg-6">
+          <div class="col-12">
             <div class="card">
               <div class="card-header">
-                <h5 class="m-0">Featured</h5>
+                <h3 class="card-title">Order Listing</h3>
+                <a href="dish/create" class="btn btn-success" style="float: right;">Create</a>
               </div>
+              <!-- /.card-header -->
               <div class="card-body">
-                <h6 class="card-title">Special title treatment</h6>
-
-                <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                <a href="#" class="btn btn-primary">Go somewhere</a>
+                @if(session('message'))
+                <div class="alert alert-success">
+                  {{ session('message') }}
+                </div>
+                @endif
+                
+                <table id="dishes" class="table table-bordered table-hover">
+                  <thead>
+                  <tr>
+                    <th>Table Number</th>
+                    <th>Dish Name</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  @foreach($orders as $order)
+                  <tr>
+                    <td>{{ $order->table_id }}</td>
+                    <td>{{ $order->dish->name }}</td>
+                    <td>{{ $status[$order->status] }}</td>
+                    <td>
+                      <div>
+                        <a href="/order/{{$order->id}}/approve" class="btn btn-warning">Approve</a>
+                        <a href="/order/{{$order->id}}/cancel" class="btn btn-danger">Cancel</a>
+                        <a href="/order/{{$order->id}}/ready" class="btn btn-success">Ready</a>
+                      </div>
+                    </td>
+                  </tr>
+                  @endforeach
+                  </tbody>
+                </table>
               </div>
+              <!-- /.card-body -->
             </div>
-
-            <div class="card card-primary card-outline">
-              <div class="card-header">
-                <h5 class="m-0">Featured</h5>
-              </div>
-              <div class="card-body">
-                <h6 class="card-title">Special title treatment</h6>
-
-                <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                <a href="#" class="btn btn-primary">Go somewhere</a>
-              </div>
-            </div>
+            <!-- /.card -->
           </div>
-          <!-- /.col-md-6 -->
+          <!-- /.col -->
         </div>
         <!-- /.row -->
-      </div><!-- /.container-fluid -->
-    </div>
+      </div>
+      <!-- /.container-fluid -->
+    </section>
     <!-- /.content -->
   </div>
   <!-- /.content-wrapper -->
+  <footer class="main-footer">
+    <div class="float-right d-none d-sm-block">
+      <form action="logout" method="POST">
+        @csrf
+        <button class="btn btn-primary">Logout</button>
+      </form>
+    </div>
+    <strong>Copyright &copy; 2014-2021 <a href="https://adminlte.io">AdminLTE.io</a>.</strong> All rights reserved.
+  </footer>
+
+  <!-- Control Sidebar -->
+  <aside class="control-sidebar control-sidebar-dark">
+    <!-- Control sidebar content goes here -->
+  </aside>
+  <!-- /.control-sidebar -->
+</div>
+<!-- ./wrapper -->
 @endsection
+
+<!-- jQuery -->
+<script src="/plugins/jquery/jquery.min.js"></script>
+<script>
+  $(function () {
+    $('#dishes').DataTable({
+      "paging": true,
+      "pagelength": 10,
+      "lengthChange": false,
+      "ordering": true,
+      "info": true,
+    });
+  });
+</script>
